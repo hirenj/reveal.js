@@ -443,14 +443,32 @@ var Reveal = (function(){
 			return element;
 
 		}
-
+		var omnipresent = toArray( document.querySelectorAll( ".reveal .slides>section.omnipresent" ) );
+		if (omnipresent && omnipresent.length == 1) {
+			omnipresent = omnipresent[0];
+		} else {
+			omnipresent = null;
+		}
 		// Iterate over all horizontal slides
-		toArray( document.querySelectorAll( HORIZONTAL_SLIDES_SELECTOR ) ).forEach( function( slideh ) {
-
+		toArray( document.querySelectorAll( HORIZONTAL_SLIDES_SELECTOR ) ).forEach( function( slideh,i ) {
+			if (slideh === omnipresent) {
+				return;
+			}
 			var backgroundStack;
 
 			if( isPrintingPDF() ) {
-				backgroundStack = _createBackground( slideh, slideh );
+				if (omnipresent) {
+					var back = document.createElement('div');
+					backgroundStack = _createBackground(omnipresent,back);
+					var cloned = omnipresent.cloneNode(true);
+					while (cloned.firstChild) {
+						back.appendChild(cloned.firstChild);
+					}
+					back.classList.add('omnipresent');
+					slideh.insertBefore(back,slideh.firstChild);
+				} else {
+					backgroundStack = _createBackground( slideh, slideh );
+				}
 			}
 			else {
 				backgroundStack = _createBackground( slideh, dom.background );
@@ -1031,6 +1049,9 @@ var Reveal = (function(){
 			var slides = toArray( document.querySelectorAll( SLIDES_SELECTOR ) );
 
 			for( var i = 0, len = slides.length; i < len; i++ ) {
+				if ( i == 0 ) {
+					continue;
+				}
 				var slide = slides[ i ];
 
 				// Don't bother updating invisible slides
@@ -1587,7 +1608,13 @@ var Reveal = (function(){
 		// an array
 		var slides = toArray( document.querySelectorAll( selector ) ),
 			slidesLength = slides.length;
-
+		var background = slides[0];
+		if (background && background.classList.contains('omnipresent')) {
+			background.classList.remove('past');
+		}
+		if (background && background.classList.contains('omnipresent') && index == 0) {
+			index = 1;
+		}
 		if( slidesLength ) {
 
 			// Should the index loop?
@@ -1614,7 +1641,7 @@ var Reveal = (function(){
 				// http://www.w3.org/html/wg/drafts/html/master/editing.html#the-hidden-attribute
 				element.setAttribute( 'hidden', '' );
 
-				if( i < index ) {
+				if( i < index && i > 0 ) {
 					// Any element previous to index is given the 'past' class
 					element.classList.add( reverse ? 'future' : 'past' );
 				}
@@ -1665,7 +1692,6 @@ var Reveal = (function(){
 			// zeroth index
 			index = 0;
 		}
-
 		return index;
 
 	}
@@ -1695,6 +1721,9 @@ var Reveal = (function(){
 			}
 
 			for( var x = 0; x < horizontalSlidesLength; x++ ) {
+				if (x == 0) {
+					continue;
+				}
 				var horizontalSlide = horizontalSlides[x];
 
 				var verticalSlides = toArray( horizontalSlide.querySelectorAll( 'section' ) ),
@@ -1743,6 +1772,8 @@ var Reveal = (function(){
 			mainLoop: for( var i = 0; i < horizontalSlides.length; i++ ) {
 
 				var horizontalSlide = horizontalSlides[i];
+				horizontalSlide.setAttribute('data-slide',pastCount);
+
 				var verticalSlides = toArray( horizontalSlide.querySelectorAll( 'section' ) );
 
 				for( var j = 0; j < verticalSlides.length; j++ ) {
@@ -1767,7 +1798,9 @@ var Reveal = (function(){
 				}
 
 			}
-
+			if ( ! isPrintingPDF() ) {
+				document.body.setAttribute('data-slide',pastCount);
+			}
 			dom.progressbar.style.width = ( pastCount / ( totalCount - 1 ) ) * window.innerWidth + 'px';
 
 		}
