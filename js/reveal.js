@@ -451,9 +451,6 @@ var Reveal = (function(){
 		}
 		// Iterate over all horizontal slides
 		toArray( document.querySelectorAll( HORIZONTAL_SLIDES_SELECTOR ) ).forEach( function( slideh,i ) {
-			if (slideh === omnipresent) {
-				return;
-			}
 			var backgroundStack;
 			var back = null;
 
