@@ -455,10 +455,11 @@ var Reveal = (function(){
 				return;
 			}
 			var backgroundStack;
+			var back = null;
 
 			if( isPrintingPDF() ) {
 				if (omnipresent) {
-					var back = document.createElement('div');
+					back = document.createElement('div');
 					backgroundStack = _createBackground(omnipresent,back);
 					var cloned = omnipresent.cloneNode(true);
 					while (cloned.firstChild) {
@@ -478,7 +479,11 @@ var Reveal = (function(){
 			toArray( slideh.querySelectorAll( 'section' ) ).forEach( function( slidev ) {
 
 				if( isPrintingPDF() ) {
-					_createBackground( slidev, slidev );
+					if (omnipresent) {
+						slidev.insertBefore(back.cloneNode(true),slidev.firstChild);
+					} else {
+						_createBackground( slidev, slidev );
+					}
 				}
 				else {
 					_createBackground( slidev, backgroundStack );
@@ -1641,7 +1646,7 @@ var Reveal = (function(){
 				// http://www.w3.org/html/wg/drafts/html/master/editing.html#the-hidden-attribute
 				element.setAttribute( 'hidden', '' );
 
-				if( i < index && i > 0 ) {
+				if( i < index && (! element.classList.contains('omnipresent')) ) {
 					// Any element previous to index is given the 'past' class
 					element.classList.add( reverse ? 'future' : 'past' );
 				}

@@ -46,7 +46,7 @@ body {
   opacity: 1;
 }
 
-.reveal .slides>section>div.omnipresent {
+.reveal .slides>section>div.omnipresent, .reveal .slides>section>section>div.omnipresent {
   position: absolute;
   top: 0px;
   left: 0px;
