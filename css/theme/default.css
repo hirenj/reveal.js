@@ -23,11 +23,15 @@ body {
   background: -ms-radial-gradient(center, circle cover, #555a5f 0%, #1c1e20 100%);
   background: radial-gradient(center, circle cover, #555a5f 0%, #1c1e20 100%);
   background-color: #2b2b2b; }
-/*
+
 body {
+  background: radial-gradient(at center, #fff 60%,#ddd);
+  background-color: #fff;
+}
+body.print-pdf {
   background: #fff;
 }
-*/
+
 .reveal {
   font-family: "Ubuntu", sans-serif;
   font-size: 36px;
@@ -57,6 +61,23 @@ body {
   opacity: 1;
 }
 
+.reveal.page .slides section:not(.omnipresent):before {
+  background: none;
+}
+
+.reveal.page .slides section:not(.omnipresent):after {
+  box-shadow: none;
+}
+
+.reveal.cube .slides section:not(.omnipresent):before {
+  background: none;
+}
+
+.reveal.cube .slides section:not(.omnipresent):after {
+  box-shadow: none;
+}
+
+
 .titlebar {
   -webkit-transition: opacity .15s ease;
   -moz-transition: opacity .15s ease;
@@ -81,6 +102,11 @@ body.print-pdf .titlebar {
 *[data-slide='1'] .titleel{
   display: block;
 }
+
+*[data-slide='1'] .bodyel{
+  display: none;
+}
+
 
 ::selection {
   color: white;
