@@ -46,7 +46,7 @@ body.print-pdf {
 
 .reveal .slides>section.omnipresent {
   display: block;
-  // Added in to fix a chromecast display offset
+  /* Added in to fix a chromecast display offset*/
   margin-top: -20px;
   z-index: 11;
   opacity: 1;
